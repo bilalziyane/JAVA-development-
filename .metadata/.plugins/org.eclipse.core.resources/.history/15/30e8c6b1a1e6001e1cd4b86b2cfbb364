@@ -1,0 +1,77 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class ClientRMI extends JFrame {
+    private JTextField wordInput;
+    private JComboBox<String> fromLanguageCombo;
+    private JComboBox<String> toLanguageCombo;
+    private JTextArea translationArea;
+    
+    // Dummy data for language options
+    private String[] languages = {"English", "French", "German", "Spanish"};
+
+    public ClientRMI() {
+        setTitle("Translation App");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Center the frame on the screen
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(4, 1));
+
+        // Input field for word
+        JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel wordLabel = new JLabel("Word: ");
+        wordInput = new JTextField(20);
+        inputPanel.add(wordLabel);
+        inputPanel.add(wordInput);
+        mainPanel.add(inputPanel);
+
+        // Combo boxes for selecting languages
+        JPanel comboPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel fromLabel = new JLabel("From: ");
+        fromLanguageCombo = new JComboBox<>(languages);
+        JLabel toLabel = new JLabel("To: ");
+        toLanguageCombo = new JComboBox<>(languages);
+        comboPanel.add(fromLabel);
+        comboPanel.add(fromLanguageCombo);
+        comboPanel.add(toLabel);
+        comboPanel.add(toLanguageCombo);
+        mainPanel.add(comboPanel);
+
+        // Button to perform translation
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton translateButton = new JButton("Translate");
+        translateButton.addActionListener(new TranslateButtonListener());
+        buttonPanel.add(translateButton);
+        mainPanel.add(buttonPanel);
+
+        // Text area to display translation
+        translationArea = new JTextArea(10, 30);
+        translationArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(translationArea);
+        mainPanel.add(scrollPane);
+
+        add(mainPanel);
+    }
+
+    // Action listener for the translate button
+    private class TranslateButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            // Here you would write the code to perform translation
+            // For this example, we simply display the word in the text area
+            String word = wordInput.getText();
+            translationArea.setText("Translated word: " + word);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                ClientRMI app = new ClientRMI();
+                app.setVisible(true);
+            }
+        });
+    }
+}

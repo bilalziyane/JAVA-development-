@@ -1,0 +1,15 @@
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class TranslationServiceImpl extends UnicastRemoteObject implements TranslationService {
+    protected TranslationServiceImpl() throws RemoteException {
+        super();
+    }
+
+    @Override
+    public String translate(String word, String sourceLanguage, String targetLanguage) throws RemoteException {
+        // Implement translation logic here
+        // For demonstration purposes, let's just return the word itself
+        return word;
+    }
+}

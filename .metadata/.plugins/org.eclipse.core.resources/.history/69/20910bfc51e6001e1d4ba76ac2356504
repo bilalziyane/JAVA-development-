@@ -1,0 +1,37 @@
+import java.io.*;
+import java.net.*;
+
+public class TokenServer {
+    private static final int MAX_TOKENS = 5; // Nombre maximal de jetons disponibles
+    private static int currentTokens = MAX_TOKENS; // Nombre de jetons actuellement disponibles
+
+    public static void main(String[] args) {
+        try {
+            ServerSocket serverSocket = new ServerSocket(12345);
+            System.out.println("Serveur de jetons démarré. En attente de connexions...");
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Connexion acceptée de " + clientSocket.getInetAddress());
+
+                // Si des jetons sont disponibles, envoie un jeton au client et met à jour le nombre de jetons disponibles
+                if (currentTokens > 0) {
+                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                    out.println("Token granted");
+                    currentTokens--;
+                    System.out.println("Jeton envoyé à " + clientSocket.getInetAddress() + ". Jetons restants : " + currentTokens);
+                } else {
+                    // Si aucun jeton n'est disponible, informe le client
+                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                    out.println("No tokens available");
+                    System.out.println("Aucun jeton disponible pour " + clientSocket.getInetAddress());
+                }
+
+                // Ferme la connexion avec le client
+                clientSocket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

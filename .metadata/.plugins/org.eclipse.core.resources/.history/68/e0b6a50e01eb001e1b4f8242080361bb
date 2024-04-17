@@ -1,0 +1,29 @@
+import java.io.*;
+import java.net.*;
+import java.util.concurrent.ForkJoinWorkerThread;
+
+public class MultiClientServer {
+	
+	public static void main(String []args) {
+		try {
+			//il faut etre abonne au service
+			int port = 80;
+			ServerSocket service = new ServerSocket(port);
+			Worker w;
+			Socket s = null;
+			InetAddress ipd = s.getInetAddress();
+			while(true) {
+				service.accept();
+				System.out.println("Le client :"+ipd.toString()+"Viens de se connecter");
+				w= new Worker(s);
+				w.start();
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("Erreur de Serveur :" + e.getMessage());
+		}
+	
+	}
+}

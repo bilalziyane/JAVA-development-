@@ -1,0 +1,71 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+
+public class ChatServer extends JFrame {
+    private JTextArea messagesArea;
+    private ServerSocket serverSocket;
+    private int serverPort = 12346;
+
+    public ChatServer() {
+        try {
+            setTitle("ChatApp");
+            serverSocket = new ServerSocket(serverPort);
+
+            setLayout(new BorderLayout());
+            messagesArea = new JTextArea();
+            messagesArea.setEditable(false);
+            add(new JScrollPane(messagesArea), BorderLayout.CENTER);
+
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        while (true) {
+                            Socket clientSocket = serverSocket.accept();
+                            handleClient(clientSocket);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleClient(Socket clientSocket) {
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+            String msg;
+            while ((msg = in.readLine()) != null) {
+                messagesArea.append("Client: " + msg + "\n"); // Display received message
+                if (msg.equals("Over&Out")) {
+                    out.println("Over&Out");
+                    break;
+                } else {
+                    out.println(msg + " OK"); // Send response with "OK" appended
+                }
+            }
+            clientSocket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                ChatServer server = new ChatServer();
+                server.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                server.setSize(400, 300);
+                server.setVisible(true);
+            }
+        });
+    }
+}

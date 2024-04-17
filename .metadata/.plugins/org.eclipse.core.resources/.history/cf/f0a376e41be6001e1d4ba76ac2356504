@@ -1,0 +1,67 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+
+public class ChatServer extends JFrame {
+    private JTextArea messagesArea;
+    private JTextField messageInput;
+    private JButton sendButton;
+    private ServerSocket serverSocket;
+    private Socket clientSocket;
+    private BufferedReader in;
+    private PrintWriter out;
+    private int serverPort = 12346;
+
+    public ChatServer() {
+        try {
+            setTitle("ChatApp");
+            serverSocket = new ServerSocket(serverPort);
+            clientSocket = serverSocket.accept();
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+            setLayout(new BorderLayout());
+            add(new JScrollPane(messagesArea), BorderLayout.CENTER);
+
+           
+
+            
+
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        String msg;
+                        while ((msg = in.readLine()) != null) {
+                            messagesArea.append("Client: " + msg + "\n"); // Display received message
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        String msg = messageInput.getText();
+                        out.println(msg);
+                        messageInput.setText("");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                
+            }).start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Ex2Server server = new Ex2Server();
+                server.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                server.setSize(400, 300);
+                server.setVisible(true);
+            }
+        });
+    }
+}

@@ -1,0 +1,27 @@
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class RMIClient {
+    public static void main(String[] args) {
+        try {
+            // Connect to the RMI registry on the server
+            Registry registry = LocateRegistry.getRegistry("100.97.105.238", 6969);
+            TranslationService translationService;
+
+            // Look up the remote object by name
+            // Replace "YourServiceName" with the name of your remote object
+            translationService = (TranslationService) registry.lookup("TranslationService");
+
+            // Invoke remote method(s) on the stub
+            // Replace "doSomething" with the name of the method you want to invoke
+            // Pass any required parameters to the method
+            
+
+            // Optionally, perform other operations with the remote object
+
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.toString());
+            e.printStackTrace();
+        }
+    }
+}
